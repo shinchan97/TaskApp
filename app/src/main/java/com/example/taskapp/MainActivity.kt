@@ -10,6 +10,8 @@ import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.app.PendingIntent
 import android.app.AlarmManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.EditText
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.content_input.*
@@ -33,8 +35,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-       val filter = findViewById(R.id.search_task) as EditText
+        //val search_filter = findViewById(R.id.search_task) as EditText
+        //you need this if you have not imported
+        // import kotlinx.android.synthetic.main.activity_main.*
 
+        search_task.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable) {
+                reloadListView()
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                reloadListView()
+            }
+        })
 
         fab.setOnClickListener { view ->
             val intent = Intent(this@MainActivity, InputActivity::class.java)
@@ -105,7 +124,7 @@ class MainActivity : AppCompatActivity() {
 
         val filter = search_task?.text.toString().trim()
 
-        if (filter.isNullOrBlank()) {
+        if (filter.isBlank()) {
             val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
 
             // 上記の結果を、TaskList としてセットする
@@ -129,18 +148,7 @@ class MainActivity : AppCompatActivity() {
             mTaskAdapter.notifyDataSetChanged()
         }
     }
-//        val taskRealmResults1 = mRealm.where(Task::class.java).equalTo(filter, category_edit_text.text.toString()).findFirst()
-//
-//
-//        // 上記の結果を、TaskList としてセットする
-//        mTaskAdapter.taskList = mRealm.copyFromRealm(taskRealmResults)
-//
-//        // TaskのListView用のアダプタに渡す
-//        listView1.adapter = mTaskAdapter
-//
-//        // 表示を更新するために、アダプターにデータが変更されたことを知らせる
-//        mTaskAdapter.notifyDataSetChanged()
-//    }
+
 
     override fun onDestroy() {
         super.onDestroy()
