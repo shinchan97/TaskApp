@@ -102,10 +102,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun reloadListView() {
         // Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
-        val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
+
         val filter = search_task?.text.toString().trim()
 
         if (filter.isNullOrBlank()) {
+            val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
 
             // 上記の結果を、TaskList としてセットする
             mTaskAdapter.taskList = mRealm.copyFromRealm(taskRealmResults)
@@ -115,11 +116,11 @@ class MainActivity : AppCompatActivity() {
 
             // 表示を更新するために、アダプターにデータが変更されたことを知らせる
             mTaskAdapter.notifyDataSetChanged()
+
         } else {
-            val taskRealmResults1 =
-                mRealm.where(Task::class.java).equalTo(filter, category_edit_text.text.toString()).findFirst()
+            val taskRealmResults_1 = mRealm.where(Task::class.java).equalTo("category", filter).findAll()
             // 上記の結果を、TaskList としてセットする
-            mTaskAdapter.taskList = mRealm.copyFromRealm(taskRealmResults1)
+            mTaskAdapter.taskList = mRealm.copyFromRealm(taskRealmResults_1)
 
             // TaskのListView用のアダプタに渡す
             listView1.adapter = mTaskAdapter
