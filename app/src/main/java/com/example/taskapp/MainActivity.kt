@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
             mTaskAdapter.notifyDataSetChanged()
 
         } else {
-            val taskRealmResults_1 = mRealm.where(Task::class.java).equalTo("category", filter).findAll()
+            val taskRealmResults_1 = mRealm.where(Task::class.java).beginsWith("category", filter).findAll()
             // 上記の結果を、TaskList としてセットする
             mTaskAdapter.taskList = mRealm.copyFromRealm(taskRealmResults_1)
 
